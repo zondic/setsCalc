@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body {
+            background: radial-gradient(#4CCEB2, #2F8FD8);
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        section {
+            background: #fff;
+            border-radius: 10px;
+            height: 300px;
+            margin: 15vh auto;
+            width: 550px;
+        }
+        h1 {
+            padding-top: 15px;
+            text-align: center;
+        }
+        section input[type=text] {
+            border: 1px solid #cfcfcf;
+            border-radius: 17px;
+            box-sizing: border-box;
+            display: block;
+            font-size: 20px;
+            height: 40px;
+            margin: 20px auto;
+            padding-left: 25px;
+            padding-right: 25px;
+            width: 70%;
+        }
+        .universal {
+            margin: 0 auto;
+            width: 70%;
+            display: flex;
+            justify-content: space-between;
+        }
+        section .universal input[type=text] {
+            width: 48%;
+            display: inline-block;
+            margin: 0;
+        }
+        section input[type=text]::placeholder {
+            color: #85929e;
+            font-family: "Arial Narrow", sans-serif;
+            font-weight: normal;
+        }
+        section a {
+            border: 1px solid #cfcfcf;
+            border-radius: 10px;
+            display: block;
+            font-size: 18px;
+            margin: 20px auto;
+            text-align: center;
+            width: 80px;
+        }
+        .results {
+            background: #fff;
+            border-radius: 10px;
+            display: none;
+            height: 500px;
+            margin: 0 auto;
+            width: 550px;
+        }
+        span {
+            display: block;
+            width: 70%;
+            margin: 0 auto;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<section>
+    <h1>Sets Calculator</h1>
+    <form>
+        <input type="text" placeholder="Write elements of first set" id="set1">
+        <input type="text" placeholder="Write elements of second set" id="set2">
+        <span>Write first and last element of universal set:</span>
+        <div class="universal">
+            <input type="text" placeholder="First element" id="first">
+            <input type="text" placeholder="Last element" id="last">
+        </div>
+
+        <a id="btn">Submit</a>
+    </form>
+</section>
+
+<div class="results" id="results">
+    <h1>Results:</h1>
+    <p>Union result set:</p>
+    <p id="union"></p>
+    <p>Intersection result set:</p>
+    <p id="intersection"></p>
+    <p>Difference result set:</p>
+    <p id="difference"></p>
+    <p>Compliment result set</p>
+    <p id="compliment"></p>
+</div>
+
+<script >
+    let a = document.getElementById('btn');
+    let unionParagraph = document.getElementById('union');
+    let intersectionParagraph = document.getElementById('intersection');
+    let differenceParagraph = document.getElementById('difference');
+    let complimentParagraph = document.getElementById('compliment');
+
+    a.onclick = function() {
+        let firstSet = document.getElementById('set1').value.split(' ');
+        let secondSet = document.getElementById('set2').value.split(' ');
+
+        let unFirst = parseInt(document.getElementById('first').value);
+        let unLast = parseInt(document.getElementById('last').value);
+
+        let universalSet = createUniversal(unFirst, unLast);
+
+        unionParagraph.innerHTML = union(firstSet, secondSet);
+        intersectionParagraph.innerHTML = intersection(firstSet, secondSet);
+        differenceParagraph.innerHTML = difference(firstSet, secondSet);
+
+        complimentParagraph.innerHTML = compliment(firstSet, universalSet);
+        document.getElementById('results').style.display = 'block';
+    };
+
+    function compliment(array, universal) {
+        let resultArray = Object.assign([], universal);
+
+        for(let i = 0; i < resultArray.length; i++) {
+            for(let j = 0; j < array.length; j++) {
+                if(resultArray[i] == array[j]){
+                    resultArray.splice(i, 1);
+                }
+            }
+        }
+
+        return resultArray.join(' ');
+    }
+
+    function createUniversal(first, last) {
+        let arr = [];
+        for(let i = first; i <= last; i++) {
+            arr.push(i);
+        }
+        return arr;
+    }
+    function union(arr1, arr2) {
+        let arr = arr1.concat(arr2);
+        arr.sort();
+        let secondVariable;
+
+        for(let i = 0; i < arr.length; i++) {
+            if(arr[i] === secondVariable){
+               arr.splice(i, 1);
+            }
+            secondVariable=arr[i];
+        }
+        return arr.join(' ');
+    }
+
+    function intersection(set1, set2) {
+        let common = [];
+        for(let i = 0; i < set1.length; i++){
+            for(let j = 0; j < set2.length; j++){
+                if(set1[i] === set2[j]){
+                    common.push(set1[i]);
+                }
+            }
+        }
+        return common.join(' ');
+    }
+
+
+    function difference(set1, set2) {
+
+        let arr1 = Object.assign([], set1);
+        let arr2 = Object.assign([], set2);
+
+        for(let i = 0; i < set1.length; i++){
+            for(let j = 0; j < set2.length; j++){
+                if(arr1[i] === arr2[j]){
+                    delete arr1[i];
+                }
+            }
+        }
+        arr1 = arr1.filter(element => element !== null);
+        return arr1.join(' ');
+    }
+</script>
+</body>
+</html>
